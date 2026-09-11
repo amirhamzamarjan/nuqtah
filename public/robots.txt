@@ -1,0 +1,7 @@
+# Nuqtah Digital Ecosystem Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+
+Sitemap: https://nuqtah.com/sitemap.xml

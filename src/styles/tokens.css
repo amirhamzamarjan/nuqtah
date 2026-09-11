@@ -1,0 +1,168 @@
+/* NUQTAH BALANCED MID-TONE LUXURY PALETTE */
+
+:root {
+  /* Balanced Mid-Tone Luxury (Warm Taupe, Muted Beige, Soft Stone, Warm Charcoal, Deep Espresso, Champagne, Muted Gold, Soft Ivory) */
+  --bg-primary: #F2ECE4;
+  --bg-secondary: #FAF6F0;
+  --bg-tertiary: #E6DDD2;
+  --bg-dark: #24201C;
+  --bg-dark-secondary: #2E2823;
+  --surface: #FAF6F0;
+  --surface-raised: #EFE8DE;
+  --surface-card: #FDFBF7;
+  --surface-dark: #26221E;
+  --surface-dark-raised: #342E28;
+  --surface-glass: rgba(250, 246, 240, 0.92);
+
+  --border: rgba(50, 44, 38, 0.1);
+  --border-light: rgba(50, 44, 38, 0.06);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(184, 154, 100, 0.4);
+
+  --accent: #A6854F;
+  --accent-hover: #B89A64;
+  --accent-soft: rgba(166, 133, 79, 0.12);
+  --accent-text: #FFFFFF;
+
+  --text-primary: #241F1B;
+  --text-secondary: #5C5247;
+  --text-muted: #877B6E;
+  --text-light: #F7F2EC;
+  --text-light-muted: #C7BCB0;
+
+  --badge-sale: #A6854F;
+  --badge-new: #383028;
+  --badge-lowstock: #A85244;
+}
+
+/* Women Luxury Sanctuary Theme (Muted Dusty Rose, Warm Blush Stone, Rosewood) */
+.theme-women {
+  --bg-primary: #F0E6E2;
+  --bg-secondary: #F8F2EF;
+  --bg-tertiary: #E4D5D0;
+  --bg-dark: #281E1C;
+  --bg-dark-secondary: #332724;
+  --surface: #FAF5F2;
+  --surface-raised: #EFE3DF;
+  --surface-card: #FDFBFA;
+  --surface-dark: #2B201E;
+  --surface-dark-raised: #382A27;
+  --surface-glass: rgba(248, 242, 239, 0.92);
+
+  --border: rgba(125, 91, 82, 0.14);
+  --border-light: rgba(125, 91, 82, 0.07);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(158, 107, 96, 0.38);
+
+  --accent: #9E6B60;
+  --accent-hover: #B57F74;
+  --accent-soft: rgba(158, 107, 96, 0.15);
+  --accent-text: #FFFFFF;
+
+  --text-primary: #281E1C;
+  --text-secondary: #6B5550;
+  --text-muted: #947E79;
+  --text-light: #FAF2EE;
+  --text-light-muted: #CDBAB4;
+
+  --badge-sale: #9E6B60;
+  --badge-new: #48322E;
+  --badge-lowstock: #A85244;
+}
+
+/* Kids Warm Luxury Palette (Warm Oatmeal Cream, Soft Beige, Gentle Sand Gold) */
+.theme-kids {
+  --bg-primary: #EFE8DD;
+  --bg-secondary: #F8F3EB;
+  --bg-tertiary: #E4DACB;
+  --bg-dark: #262019;
+  --bg-dark-secondary: #322A21;
+  --surface: #FAF5ED;
+  --surface-raised: #EFE4D6;
+  --surface-card: #FDFBF8;
+  --surface-dark: #2A231B;
+  --surface-dark-raised: #372E24;
+  --surface-glass: rgba(248, 243, 235, 0.92);
+
+  --border: rgba(120, 97, 68, 0.14);
+  --border-light: rgba(120, 97, 68, 0.07);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(166, 137, 98, 0.38);
+
+  --accent: #99784D;
+  --accent-hover: #AF8E60;
+  --accent-soft: rgba(153, 120, 77, 0.15);
+  --accent-text: #FFFFFF;
+
+  --text-primary: #262019;
+  --text-secondary: #635443;
+  --text-muted: #8E7D6A;
+  --text-light: #FAF4EB;
+  --text-light-muted: #C9BCAB;
+
+  --badge-sale: #99784D;
+  --badge-new: #44372A;
+  --badge-lowstock: #A85244;
+}
+
+/* Screen Cinematic Editorial Platform Theme */
+.theme-screen {
+  --bg-primary: #EDE6DC;
+  --bg-secondary: #F7F2EB;
+  --bg-tertiary: #E0D6C8;
+  --bg-dark: #211D19;
+  --bg-dark-secondary: #2C2621;
+  --surface: #FAF6EE;
+  --surface-raised: #EAE0D3;
+  --surface-card: #FDFBF8;
+  --surface-dark: #25201C;
+  --surface-dark-raised: #332B25;
+  --surface-glass: rgba(247, 242, 235, 0.92);
+
+  --border: rgba(45, 39, 33, 0.12);
+  --border-light: rgba(45, 39, 33, 0.06);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(184, 154, 100, 0.4);
+
+  --accent: #A6854F;
+  --accent-hover: #B89A64;
+  --accent-soft: rgba(166, 133, 79, 0.12);
+  --accent-text: #FFFFFF;
+
+  --text-primary: #211D19;
+  --text-secondary: #574E43;
+  --text-muted: #82776B;
+  --text-light: #F7F2EB;
+  --text-light-muted: #C5BBAE;
+}
+
+/* Institute Scholarly Parchment & Stone Sanctuary */
+.theme-institute {
+  --bg-primary: #EFE9DF;
+  --bg-secondary: #F8F3EA;
+  --bg-tertiary: #E4DCCE;
+  --bg-dark: #1F1B17;
+  --bg-dark-secondary: #2A241F;
+  --surface: #FAF5EC;
+  --surface-raised: #EAE1D3;
+  --surface-card: #FDFBF8;
+  --surface-dark: #24201B;
+  --surface-dark-raised: #312B24;
+  --surface-glass: rgba(248, 243, 234, 0.92);
+
+  --border: rgba(50, 44, 38, 0.11);
+  --border-light: rgba(50, 44, 38, 0.06);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(166, 133, 79, 0.4);
+
+  --accent: #91713B;
+  --accent-hover: #A8864E;
+  --accent-soft: rgba(145, 113, 59, 0.12);
+  --accent-text: #FFFFFF;
+
+  --text-primary: #1F1B17;
+  --text-secondary: #544C41;
+  --text-muted: #7E7467;
+  --text-light: #FAF4EB;
+  --text-light-muted: #C5BBAE;
+}

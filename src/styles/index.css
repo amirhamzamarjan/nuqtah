@@ -1,0 +1,110 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Cormorant Garamond', 'Cinzel', Georgia, serif;
+    letter-spacing: 0.015em;
+  }
+
+  .font-arabic {
+    font-family: 'Amiri', 'Scheherazade New', 'Noto Naskh Arabic', serif;
+    direction: rtl;
+    line-height: 2.3;
+  }
+}
+
+/* Custom Mid-Tone Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C7AD7A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Mid-Tone Luxury Glassmorphism */
+.glass-panel {
+  background-color: var(--surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px -4px rgba(50, 44, 38, 0.04);
+}
+
+/* Multi-Tone Layer Surfaces */
+.surface-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 18px -4px rgba(50, 44, 38, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.surface-card:hover {
+  background-color: var(--surface);
+  border-color: var(--border-accent);
+  box-shadow: 0 10px 28px -8px rgba(50, 44, 38, 0.09);
+}
+
+.surface-card-dark {
+  background-color: var(--surface-dark);
+  color: var(--text-light);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* Section Dimensionality Utilities */
+.section-light {
+  background-color: var(--bg-secondary);
+}
+
+.section-stone {
+  background-color: var(--bg-primary);
+}
+
+.section-beige {
+  background-color: var(--bg-tertiary);
+}
+
+.section-dark {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.section-dark-secondary {
+  background-color: var(--bg-dark-secondary);
+  color: var(--text-light);
+}
+
+/* Focus and accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
