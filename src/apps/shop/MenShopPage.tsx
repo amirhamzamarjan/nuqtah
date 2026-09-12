@@ -113,11 +113,20 @@ export const MenShopPage: React.FC = () => {
 
       {/* Product Grid */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filtered.map((prod) => (
-            <ProductCard key={prod.id} product={prod} />
-          ))}
-        </div>
+        {filtered.length === 0 ? (
+          <div className="py-20 text-center space-y-3 surface-card bg-[#FDFBF7] rounded-sm border border-[#322C26]/10 p-12 shadow-sm">
+            <p className="text-lg font-serif text-[#241F1B]">No pieces currently listed in this category.</p>
+            <p className="text-xs text-[#5C5247] max-w-sm mx-auto font-light leading-relaxed">
+              New handcrafted silhouettes are added directly from the admin panel.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filtered.map((prod) => (
+              <ProductCard key={prod.id} product={prod} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
