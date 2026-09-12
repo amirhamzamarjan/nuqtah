@@ -131,6 +131,7 @@ export const App: React.FC = () => {
                   <Route path="/institute/courses" element={<CoursesPage />} />
 
                   {/* Site 5: Admin Management Console */}
+                  <Route path="/admin" element={<AdminApp />} />
                   <Route path="/admin/*" element={<AdminApp />} />
 
                   {/* 404 Catch-All */}
