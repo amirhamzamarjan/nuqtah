@@ -83,6 +83,202 @@ function saveStored<T>(key: string, data: T): void {
   }
 }
 
+// -------------------------------------------------------------
+// DATABASE MAPPERS (SNAKE_CASE <-> CAMELCASE)
+// -------------------------------------------------------------
+
+function mapDbVariantToVariant(row: any): ProductVariant {
+  return {
+    id: row.id,
+    productId: row.product_id || row.productId,
+    sku: row.sku || '',
+    name: row.name || 'Standard',
+    attributes: row.attributes || {},
+    priceOverride: row.price_override !== null && row.price_override !== undefined ? Number(row.price_override) : undefined,
+    stock: Number(row.stock || 0),
+    active: row.active !== undefined ? Boolean(row.active) : true,
+  };
+}
+
+function mapDbProductToProduct(row: any): Product {
+  const variants = Array.isArray(row.variants)
+    ? row.variants.map(mapDbVariantToVariant)
+    : Array.isArray(row.product_variants)
+    ? row.product_variants.map(mapDbVariantToVariant)
+    : [];
+
+  const rawStock = row.total_stock !== undefined ? row.total_stock : (row.totalStock !== undefined ? row.totalStock : 0);
+  const totalStock = variants.length > 0
+    ? variants.reduce((acc: number, v: ProductVariant) => acc + Math.max(0, v.stock), 0)
+    : Number(rawStock || 0);
+
+  return {
+    id: row.id,
+    slug: row.slug || '',
+    name: row.name || '',
+    shortDescription: row.short_description || row.shortDescription || '',
+    description: row.description || '',
+    departmentId: (row.department_id || row.departmentId || 'men') as DepartmentId,
+    categoryId: row.category_id || row.categoryId || '',
+    subcategoryId: row.subcategory_id || row.subcategoryId,
+    collectionId: row.collection_id || row.collectionId,
+    sku: row.sku || '',
+    price: Number(row.price || 0),
+    oldPrice: row.old_price !== null && row.old_price !== undefined ? Number(row.old_price) : (row.oldPrice !== undefined ? Number(row.oldPrice) : undefined),
+    discountType: row.discount_type || row.discountType,
+    discountValue: row.discount_value !== null && row.discount_value !== undefined ? Number(row.discount_value) : (row.discountValue !== undefined ? Number(row.discountValue) : undefined),
+    salePrice: row.sale_price !== null && row.sale_price !== undefined ? Number(row.sale_price) : (row.salePrice !== undefined ? Number(row.salePrice) : undefined),
+    mainImage: row.main_image || row.mainImage || '',
+    galleryImages: Array.isArray(row.gallery_images) ? row.gallery_images : (Array.isArray(row.galleryImages) ? row.galleryImages : [row.main_image || row.mainImage || '']),
+    hoverImage: row.hover_image || row.hoverImage,
+    featured: Boolean(row.featured),
+    badge: row.badge,
+    active: row.active !== undefined ? Boolean(row.active) : true,
+    available: totalStock > 0,
+    totalStock,
+    specifications: row.specifications || {},
+    careInstructions: Array.isArray(row.care_instructions) ? row.care_instructions : (Array.isArray(row.careInstructions) ? row.careInstructions : []),
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    variants,
+    createdAt: row.created_at || row.createdAt || new Date().toISOString(),
+    updatedAt: row.updated_at || row.updatedAt || new Date().toISOString(),
+  };
+}
+
+function mapProductToDbRow(p: Product): any {
+  return {
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    short_description: p.shortDescription,
+    description: p.description,
+    department_id: p.departmentId,
+    category_id: p.categoryId,
+    subcategory_id: p.subcategoryId || null,
+    collection_id: p.collectionId || null,
+    sku: p.sku,
+    price: p.price,
+    old_price: p.oldPrice || null,
+    discount_type: p.discountType || null,
+    discount_value: p.discountValue || null,
+    sale_price: p.salePrice || null,
+    main_image: p.mainImage,
+    gallery_images: p.galleryImages || [p.mainImage],
+    hover_image: p.hoverImage || null,
+    featured: p.featured,
+    badge: p.badge || null,
+    active: p.active,
+    available: p.totalStock > 0,
+    total_stock: p.totalStock,
+    specifications: p.specifications || {},
+    care_instructions: p.careInstructions || [],
+    tags: p.tags || [],
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function mapDbCategoryToCategory(row: any): Category {
+  return {
+    id: row.id,
+    departmentId: (row.department_id || row.departmentId || 'women') as DepartmentId,
+    name: row.name,
+    slug: row.slug,
+    description: row.description,
+    image: row.image,
+    active: row.active !== undefined ? Boolean(row.active) : true,
+    order: row.display_order !== undefined ? Number(row.display_order) : (row.order !== undefined ? Number(row.order) : 0),
+  };
+}
+
+function mapCategoryToDbRow(c: Category): any {
+  return {
+    id: c.id,
+    department_id: c.departmentId,
+    name: c.name,
+    slug: c.slug,
+    description: c.description || null,
+    image: c.image || null,
+    active: c.active,
+    display_order: c.order || 0,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function mapDbOfferToOffer(row: any): Offer {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    description: row.description,
+    startAt: row.start_at || row.startAt,
+    endAt: row.end_at || row.endAt,
+    discountType: row.discount_type || row.discountType || 'percentage',
+    discountValue: Number(row.discount_value !== undefined ? row.discount_value : (row.discountValue || 0)),
+    bannerImage: row.banner_image || row.bannerImage,
+    departmentId: row.department_id || row.departmentId,
+    productIds: Array.isArray(row.product_ids) ? row.product_ids : row.productIds,
+    categoryIds: Array.isArray(row.category_ids) ? row.category_ids : row.categoryIds,
+    active: row.active !== undefined ? Boolean(row.active) : true,
+  };
+}
+
+function mapDbVideoToVideo(row: any): ScreenVideo {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    youtubeUrl: row.youtube_url || row.youtubeUrl || '',
+    youtubeId: row.youtube_id || row.youtubeId || '',
+    thumbnail: row.thumbnail || '',
+    description: row.description || '',
+    categoryId: row.category_id || row.categoryId || '',
+    speakerId: row.speaker_id || row.speakerId,
+    seriesId: row.series_id || row.seriesId,
+    episodeNumber: row.episode_number || row.episodeNumber,
+    duration: row.duration,
+    publishedAt: row.published_at || row.publishedAt || new Date().toISOString(),
+    featured: Boolean(row.featured),
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    active: row.active !== undefined ? Boolean(row.active) : true,
+  };
+}
+
+function mapDbAyahToAyah(row: any): InstituteAyah {
+  return {
+    id: row.id,
+    arabicText: row.arabic_text || row.arabicText || '',
+    translation: row.translation || '',
+    surahNameArabic: row.surah_name_arabic || row.surahNameArabic || '',
+    surahNameEnglish: row.surah_name_english || row.surahNameEnglish || '',
+    surahNumber: Number(row.surah_number || row.surahNumber || 1),
+    ayahNumber: Number(row.ayah_number || row.ayahNumber || 1),
+    reference: row.reference || '',
+    reflection: row.reflection,
+    topicId: row.topic_id || row.topicId,
+    featured: Boolean(row.featured),
+    published: row.published !== undefined ? Boolean(row.published) : true,
+    createdAt: row.created_at || row.createdAt || new Date().toISOString(),
+  };
+}
+
+function mapDbArticleToArticle(row: any): InstituteArticle {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    excerpt: row.excerpt || '',
+    content: row.content || '',
+    coverImage: row.cover_image || row.coverImage || '',
+    author: row.author || '',
+    topicId: row.topic_id || row.topicId,
+    readingTimeMinutes: Number(row.reading_time_minutes || row.readingTimeMinutes || 5),
+    publishedAt: row.published_at || row.publishedAt || new Date().toISOString(),
+    featured: Boolean(row.featured),
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    active: row.active !== undefined ? Boolean(row.active) : true,
+  };
+}
+
 class NuqtahStore {
   private departments: Department[];
   private categories: Category[];
@@ -122,8 +318,17 @@ class NuqtahStore {
     this.instituteArticles = loadStored(STORAGE_KEYS.INSTITUTE_ARTICLES, INITIAL_INSTITUTE_ARTICLES);
     this.instituteResources = loadStored(STORAGE_KEYS.INSTITUTE_RESOURCES, INITIAL_INSTITUTE_RESOURCES);
     this.courses = loadStored(STORAGE_KEYS.COURSES, INITIAL_COURSES);
+
     const storedSettings = loadStored<Partial<GlobalSettings>>(STORAGE_KEYS.SETTINGS, {});
-    this.settings = { ...APP_CONFIG, ...storedSettings, whatsAppNumber: APP_CONFIG.whatsAppNumber, whatsAppInternational: APP_CONFIG.whatsAppInternational, supportEmail: APP_CONFIG.supportEmail, screenYouTube: APP_CONFIG.screenYouTube, address: APP_CONFIG.address };
+    this.settings = {
+      ...APP_CONFIG,
+      ...storedSettings,
+      whatsAppNumber: APP_CONFIG.whatsAppNumber,
+      whatsAppInternational: APP_CONFIG.whatsAppInternational,
+      supportEmail: APP_CONFIG.supportEmail,
+      screenYouTube: APP_CONFIG.screenYouTube,
+      address: APP_CONFIG.address,
+    };
 
     this.syncFromSupabase();
   }
@@ -139,40 +344,85 @@ class NuqtahStore {
     this.listeners.forEach((fn) => fn());
   }
 
-  private async syncFromSupabase() {
+  /**
+   * Fetches latest data from Supabase PostgreSQL and maps snake_case to camelCase
+   */
+  public async syncFromSupabase() {
     if (!isSupabaseConfigured || !supabase) return;
     try {
-      const [deptRes, prodRes, catRes, vidRes, ayaRes] = await Promise.all([
-        supabase.from('departments').select('*').eq('active', true),
-        supabase.from('products').select('*, variants:product_variants(*)').eq('active', true),
-        supabase.from('categories').select('*').eq('active', true),
-        supabase.from('screen_videos').select('*').eq('active', true),
-        supabase.from('institute_ayat').select('*').eq('published', true),
+      const [deptRes, prodRes, catRes, colRes, offRes, vidRes, ayaRes, artRes] = await Promise.all([
+        supabase.from('departments').select('*').eq('active', true).order('display_order'),
+        supabase.from('products').select('*, variants:product_variants(*)').order('created_at', { ascending: false }),
+        supabase.from('categories').select('*').order('display_order'),
+        supabase.from('collections').select('*'),
+        supabase.from('offers').select('*'),
+        supabase.from('screen_videos').select('*').order('published_at', { ascending: false }),
+        supabase.from('institute_ayat').select('*').order('created_at', { ascending: false }),
+        supabase.from('institute_articles').select('*').order('published_at', { ascending: false }),
       ]);
 
       if (deptRes.data && deptRes.data.length > 0) {
-        this.departments = deptRes.data as Department[];
+        this.departments = deptRes.data.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          slug: d.slug,
+          tagline: d.tagline || '',
+          description: d.description || '',
+          image: d.image || '',
+          theme: d.theme || 'men',
+          active: Boolean(d.active),
+          order: Number(d.display_order || 0),
+        }));
         saveStored(STORAGE_KEYS.DEPARTMENTS, this.departments);
       }
+
       if (prodRes.data && prodRes.data.length > 0) {
-        this.products = prodRes.data as Product[];
+        this.products = prodRes.data.map(mapDbProductToProduct);
         saveStored(STORAGE_KEYS.PRODUCTS, this.products);
       }
+
       if (catRes.data && catRes.data.length > 0) {
-        this.categories = catRes.data as Category[];
+        this.categories = catRes.data.map(mapDbCategoryToCategory);
         saveStored(STORAGE_KEYS.CATEGORIES, this.categories);
       }
+
+      if (colRes.data && colRes.data.length > 0) {
+        this.collections = colRes.data.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          description: c.description || '',
+          bannerImage: c.banner_image,
+          departmentId: c.department_id,
+          featured: Boolean(c.featured),
+          active: Boolean(c.active),
+        }));
+        saveStored(STORAGE_KEYS.COLLECTIONS, this.collections);
+      }
+
+      if (offRes.data && offRes.data.length > 0) {
+        this.offers = offRes.data.map(mapDbOfferToOffer);
+        saveStored(STORAGE_KEYS.OFFERS, this.offers);
+      }
+
       if (vidRes.data && vidRes.data.length > 0) {
-        this.screenVideos = vidRes.data as ScreenVideo[];
+        this.screenVideos = vidRes.data.map(mapDbVideoToVideo);
         saveStored(STORAGE_KEYS.SCREEN_VIDEOS, this.screenVideos);
       }
+
       if (ayaRes.data && ayaRes.data.length > 0) {
-        this.instituteAyat = ayaRes.data as InstituteAyah[];
+        this.instituteAyat = ayaRes.data.map(mapDbAyahToAyah);
         saveStored(STORAGE_KEYS.INSTITUTE_AYAT, this.instituteAyat);
       }
+
+      if (artRes.data && artRes.data.length > 0) {
+        this.instituteArticles = artRes.data.map(mapDbArticleToArticle);
+        saveStored(STORAGE_KEYS.INSTITUTE_ARTICLES, this.instituteArticles);
+      }
+
       this.notify();
     } catch (err) {
-      console.warn('Supabase initial fetch skipped or failed, using synchronized state:', err);
+      console.warn('Supabase sync info:', err);
     }
   }
 
@@ -210,12 +460,26 @@ class NuqtahStore {
     }
     saveStored(STORAGE_KEYS.CATEGORIES, this.categories);
     this.notify();
+
+    // Persist to Supabase
+    if (isSupabaseConfigured && supabase) {
+      const row = mapCategoryToDbRow(category);
+      supabase.from('categories').upsert(row, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveCategory error:', error);
+      });
+    }
   }
 
   public deleteCategory(id: string): void {
     this.categories = this.categories.filter((c) => c.id !== id);
     saveStored(STORAGE_KEYS.CATEGORIES, this.categories);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('categories').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteCategory error:', error);
+      });
+    }
   }
 
   public getCollections(): Collection[] {
@@ -235,12 +499,31 @@ class NuqtahStore {
     }
     saveStored(STORAGE_KEYS.COLLECTIONS, this.collections);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('collections').upsert({
+        id: col.id,
+        name: col.name,
+        slug: col.slug,
+        description: col.description,
+        featured: col.featured,
+        active: col.active,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveCollection error:', error);
+      });
+    }
   }
 
   public deleteCollection(id: string): void {
     this.collections = this.collections.filter((c) => c.id !== id);
     saveStored(STORAGE_KEYS.COLLECTIONS, this.collections);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('collections').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteCollection error:', error);
+      });
+    }
   }
 
   // -------------------------------------------------------------
@@ -288,7 +571,7 @@ class NuqtahStore {
     }
     product.updatedAt = new Date().toISOString();
 
-    const idx = this.products.findIndex((p) => p.id === product.id);
+    const idx = this.products.findIndex((p) => p.id === product.id || p.slug === product.slug);
     if (idx >= 0) {
       this.products[idx] = product;
     } else {
@@ -296,19 +579,50 @@ class NuqtahStore {
     }
     saveStored(STORAGE_KEYS.PRODUCTS, this.products);
     this.notify();
+
+    // Asynchronously upsert to Supabase
+    if (isSupabaseConfigured && supabase) {
+      const dbRow = mapProductToDbRow(product);
+      supabase.from('products').upsert(dbRow, { onConflict: 'id' }).then(async ({ error }) => {
+        if (error) {
+          console.error('Supabase saveProduct error:', error);
+          return;
+        }
+        // Also upsert variants
+        if (product.variants && product.variants.length > 0) {
+          const variantRows = product.variants.map((v) => ({
+            id: v.id,
+            product_id: product.id,
+            sku: v.sku,
+            name: v.name,
+            attributes: v.attributes,
+            price_override: v.priceOverride || null,
+            stock: v.stock,
+            active: v.active,
+          }));
+          await supabase!.from('product_variants').upsert(variantRows, { onConflict: 'id' });
+        }
+      });
+    }
   }
 
   public deleteProduct(id: string): void {
-    this.products = this.products.filter((p) => p.id !== id);
+    this.products = this.products.filter((p) => p.id !== id && p.slug !== id);
     saveStored(STORAGE_KEYS.PRODUCTS, this.products);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('products').delete().or(`id.eq.${id},slug.eq.${id}`).then(({ error }) => {
+        if (error) console.error('Supabase deleteProduct error:', error);
+      });
+    }
   }
 
   /**
    * Real Inventory Decrement (Ensures never drops below 0)
    */
   public decrementStock(productId: string, variantId?: string, quantity: number = 1): boolean {
-    const product = this.products.find((p) => p.id === productId);
+    const product = this.products.find((p) => p.id === productId || p.slug === productId);
     if (!product) return false;
 
     if (variantId && product.variants && product.variants.length > 0) {
@@ -326,6 +640,17 @@ class NuqtahStore {
     product.updatedAt = new Date().toISOString();
     saveStored(STORAGE_KEYS.PRODUCTS, this.products);
     this.notify();
+
+    // Supabase decrement
+    if (isSupabaseConfigured && supabase) {
+      if (variantId) {
+        const v = product.variants.find((item) => item.id === variantId);
+        if (v) {
+          supabase.from('product_variants').update({ stock: v.stock }).eq('id', variantId);
+        }
+      }
+      supabase.from('products').update({ total_stock: product.totalStock, available: product.available }).eq('id', product.id);
+    }
     return true;
   }
 
@@ -333,7 +658,7 @@ class NuqtahStore {
    * Restock or adjust inventory safely
    */
   public updateVariantStock(productId: string, variantId: string, newStock: number): void {
-    const product = this.products.find((p) => p.id === productId);
+    const product = this.products.find((p) => p.id === productId || p.slug === productId);
     if (!product) return;
 
     const variant = product.variants?.find((v) => v.id === variantId);
@@ -344,17 +669,26 @@ class NuqtahStore {
       product.updatedAt = new Date().toISOString();
       saveStored(STORAGE_KEYS.PRODUCTS, this.products);
       this.notify();
+
+      if (isSupabaseConfigured && supabase) {
+        supabase.from('product_variants').update({ stock: variant.stock }).eq('id', variantId).then(() => {});
+        supabase.from('products').update({ total_stock: product.totalStock, available: product.available }).eq('id', product.id).then(() => {});
+      }
     }
   }
 
   public updateProductDirectStock(productId: string, newStock: number): void {
-    const product = this.products.find((p) => p.id === productId);
+    const product = this.products.find((p) => p.id === productId || p.slug === productId);
     if (!product) return;
     product.totalStock = Math.max(0, newStock);
     product.available = product.totalStock > 0;
     product.updatedAt = new Date().toISOString();
     saveStored(STORAGE_KEYS.PRODUCTS, this.products);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('products').update({ total_stock: product.totalStock, available: product.available }).eq('id', product.id).then(() => {});
+    }
   }
 
   // -------------------------------------------------------------
@@ -383,12 +717,34 @@ class NuqtahStore {
     }
     saveStored(STORAGE_KEYS.OFFERS, this.offers);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('offers').upsert({
+        id: offer.id,
+        title: offer.title,
+        slug: offer.slug,
+        description: offer.description,
+        start_at: offer.startAt,
+        end_at: offer.endAt,
+        discount_type: offer.discountType,
+        discount_value: offer.discountValue,
+        active: offer.active,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveOffer error:', error);
+      });
+    }
   }
 
   public deleteOffer(id: string): void {
     this.offers = this.offers.filter((o) => o.id !== id);
     saveStored(STORAGE_KEYS.OFFERS, this.offers);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('offers').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteOffer error:', error);
+      });
+    }
   }
 
   // -------------------------------------------------------------
@@ -454,12 +810,37 @@ class NuqtahStore {
     }
     saveStored(STORAGE_KEYS.SCREEN_VIDEOS, this.screenVideos);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('screen_videos').upsert({
+        id: video.id,
+        title: video.title,
+        slug: video.slug,
+        youtube_url: video.youtubeUrl,
+        youtube_id: video.youtubeId,
+        thumbnail: video.thumbnail,
+        description: video.description,
+        category_id: video.categoryId,
+        speaker_id: video.speakerId || null,
+        duration: video.duration,
+        featured: video.featured,
+        active: video.active,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveScreenVideo error:', error);
+      });
+    }
   }
 
   public deleteScreenVideo(id: string): void {
     this.screenVideos = this.screenVideos.filter((v) => v.id !== id);
     saveStored(STORAGE_KEYS.SCREEN_VIDEOS, this.screenVideos);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('screen_videos').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteScreenVideo error:', error);
+      });
+    }
   }
 
   public getScreenSpeakers(): ScreenSpeaker[] {
@@ -530,12 +911,30 @@ class NuqtahStore {
     else this.screenQuotes.unshift(q);
     saveStored(STORAGE_KEYS.SCREEN_QUOTES, this.screenQuotes);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('screen_quotes').upsert({
+        id: q.id,
+        quote: q.quote,
+        speaker_name: q.speakerName,
+        source: q.source || null,
+        active: q.active,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveScreenQuote error:', error);
+      });
+    }
   }
 
   public deleteScreenQuote(id: string): void {
     this.screenQuotes = this.screenQuotes.filter((q) => q.id !== id);
     saveStored(STORAGE_KEYS.SCREEN_QUOTES, this.screenQuotes);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('screen_quotes').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteScreenQuote error:', error);
+      });
+    }
   }
 
   // -------------------------------------------------------------
@@ -555,12 +954,36 @@ class NuqtahStore {
     else this.instituteAyat.unshift(ayah);
     saveStored(STORAGE_KEYS.INSTITUTE_AYAT, this.instituteAyat);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('institute_ayat').upsert({
+        id: ayah.id,
+        arabic_text: ayah.arabicText,
+        translation: ayah.translation,
+        surah_name_arabic: ayah.surahNameArabic,
+        surah_name_english: ayah.surahNameEnglish,
+        surah_number: ayah.surahNumber,
+        ayah_number: ayah.ayahNumber,
+        reference: ayah.reference,
+        reflection: ayah.reflection || null,
+        featured: ayah.featured,
+        published: ayah.published,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveInstituteAyah error:', error);
+      });
+    }
   }
 
   public deleteInstituteAyah(id: string): void {
     this.instituteAyat = this.instituteAyat.filter((a) => a.id !== id);
     saveStored(STORAGE_KEYS.INSTITUTE_AYAT, this.instituteAyat);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('institute_ayat').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteInstituteAyah error:', error);
+      });
+    }
   }
 
   public getInstituteArticles(): InstituteArticle[] {
@@ -581,12 +1004,35 @@ class NuqtahStore {
     else this.instituteArticles.unshift(art);
     saveStored(STORAGE_KEYS.INSTITUTE_ARTICLES, this.instituteArticles);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('institute_articles').upsert({
+        id: art.id,
+        title: art.title,
+        slug: art.slug,
+        excerpt: art.excerpt,
+        content: art.content,
+        cover_image: art.coverImage,
+        author: art.author,
+        reading_time_minutes: art.readingTimeMinutes,
+        featured: art.featured,
+        active: art.active,
+      }, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error('Supabase saveInstituteArticle error:', error);
+      });
+    }
   }
 
   public deleteInstituteArticle(id: string): void {
     this.instituteArticles = this.instituteArticles.filter((a) => a.id !== id);
     saveStored(STORAGE_KEYS.INSTITUTE_ARTICLES, this.instituteArticles);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('institute_articles').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Supabase deleteInstituteArticle error:', error);
+      });
+    }
   }
 
   public getInstituteTopics(): InstituteTopic[] {
@@ -624,6 +1070,14 @@ class NuqtahStore {
     this.settings = { ...this.settings, ...newSettings };
     saveStored(STORAGE_KEYS.SETTINGS, this.settings);
     this.notify();
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('global_settings').upsert({
+        key: 'store_settings',
+        value: this.settings,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'key' }).then(() => {});
+    }
   }
 }
 

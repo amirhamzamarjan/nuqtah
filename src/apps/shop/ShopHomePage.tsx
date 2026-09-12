@@ -12,6 +12,11 @@ export const ShopHomePage: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [activeOffers, setActiveOffers] = useState<Offer[]>([]);
+  const [menProducts, setMenProducts] = useState<Product[]>([]);
+  const [womenProducts, setWomenProducts] = useState<Product[]>([]);
+  const [kidsProducts, setKidsProducts] = useState<Product[]>([]);
+  const [attarProducts, setAttarProducts] = useState<Product[]>([]);
+  const [foodProducts, setFoodProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     setTheme('default');
@@ -20,16 +25,15 @@ export const ShopHomePage: React.FC = () => {
       setCollections(store.getCollections());
       setFeaturedProducts(store.getProducts({ featured: true }));
       setActiveOffers(store.getActiveOffers());
+      setMenProducts(store.getProducts({ departmentId: 'men' }).slice(0, 4));
+      setWomenProducts(store.getProducts({ departmentId: 'women' }).slice(0, 4));
+      setKidsProducts(store.getProducts({ departmentId: 'kids' }).slice(0, 4));
+      setAttarProducts(store.getProducts({ departmentId: 'attar' }).slice(0, 4));
+      setFoodProducts(store.getProducts({ departmentId: 'organic-food' }).slice(0, 4));
     };
     update();
     return store.subscribe(update);
   }, [setTheme]);
-
-  const menProducts = store.getProducts({ departmentId: 'men' }).slice(0, 4);
-  const womenProducts = store.getProducts({ departmentId: 'women' }).slice(0, 4);
-  const kidsProducts = store.getProducts({ departmentId: 'kids' }).slice(0, 4);
-  const attarProducts = store.getProducts({ departmentId: 'attar' }).slice(0, 4);
-  const foodProducts = store.getProducts({ departmentId: 'organic-food' }).slice(0, 4);
 
   return (
     <div className="min-h-screen bg-[#F2ECE4] text-[#241F1B] transition-colors duration-300">
